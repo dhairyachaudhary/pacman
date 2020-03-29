@@ -1,0 +1,215 @@
+#Class definitions
+
+class grid():
+
+    """
+    Instance is the grid in which the game is played
+
+    INSTANCE ATTRIBUTES:
+    n: Represents no. of rows and coolumns in the playing grid. Taken as input from user. [Integer]
+    start: Contains the point on the grid where player starts from. This is taken at random. [Tuple]
+    goal: Contains the point on the grid where the player is supposed to reach. This is taken at random. [Tuple]
+    myObstancles: Randomly generated list of objects of the type obstancle which will be randomly spawned throughout the grid. [List]
+    myRewards: Randomly generated list of objects of the type reward which will be randomly spawned throughout the grid. [List]
+    """
+
+    def __init__(self, n, start, goal, myObstancles, myRewards):
+        """
+        Attributes of a grid of n size.
+        Pre: All arguments must belong to correct category as specified above.
+        """
+        self.n=n
+        self.start=start
+        self.goal=goal
+        self.myObstancles=myObstancles
+        self.myRewards=myRewards
+
+    def gridr(self,player):
+        """
+        Sets up the game grid.
+        """
+        thematrix=[]
+        row=0
+        while row<self.n:
+            rowlist=[]
+            col=0
+            while col<self.n:
+                p=False
+                for a in self.myObstancles:
+                    if a.x==col and a.y==row:
+                        p=True
+                q=False
+                for a in self.myRewards:
+                    if a.x==col and a.y==row:
+                        q=True
+                if player.x==col and player.y==row:
+                    rowlist.append("O")
+                elif self.goal[0]==col and self.goal[1]==row:
+                    rowlist.append("G")
+                elif p==True:
+                    rowlist.append("#")
+                elif q==True:
+                    for a in self.myRewards:
+                        if a.x==col:
+                            val=a.value
+                            rowlist.append(val)
+                            break
+                else:
+                    rowlist.append(".")
+                col=col+1
+            row=row+1
+            thematrix.append(rowlist)
+        return (thematrix)
+
+    def showgrid(self,g,p1):
+        """
+        Prints the grid (2-D array) onto the console.
+        """
+        row=0
+        while row<self.n:
+            col=0
+            while col<self.n:
+                if col==p1.x and row==p1.y:
+                    print("O",end="")
+                elif col==self.goal[0] and row==self.goal[1]:
+                    print("G",end="")
+                elif g[row][col]=="O":
+                    print(".",end="")
+                elif g[row][col]=="G":
+                    print(".",end="")
+                else:
+                    print(g[row][col],end="")
+                col=col+1
+            row=row+1
+            print("")
+
+    def rotateAnticlockwise(self,mat):
+        """
+        Special move to rotate game grid anticlockwise.
+        """
+        a=self.n
+        while a!=0:
+            for x in range(0, int(self.n/2)):
+                for y in range(x, self.n-x-1):
+                    t=mat[x][y]
+                    mat[x][y]=mat[y][self.n-1-x]
+                    mat[y][self.n-1-x]=mat[self.n-1-x][self.n-1-y]
+                    mat[self.n-1-x][self.n-1-y]=mat[self.n-1-y][x]
+                    mat[self.n-1-y][x]=t
+            a=a-1
+            return mat
+
+    def rotateClockwise(self,mat):
+        """
+        Special move to rotate game grid clockwise.
+        """
+        a=self.n
+        while a!=0:
+            for x in range(0, int(self.n/2)):
+                for y in range(x, self.n-x-1):
+                    t=mat[x][y]
+                    mat[x][y]=mat[self.n-1-y][x]
+                    mat[self.n-1-y][x]=mat[self.n-1-x][self.n-1-y]
+                    mat[self.n-1-x][self.n-1-y]=mat[y][self.n-1-x]
+                    mat[y][self.n-1-x]=t
+            a=a-1
+            return mat
+
+class obstancle():
+    """
+    Instance of this class represents an obstancle on the game grid. Represented by #.
+
+    INSTANCE ATTRIBUTES:
+    x: x coordinate of the obstancle on the grid. [Integer]
+    y: y coordinate of the obstancle on the grid. [Integer]
+    """
+    def __init__(self,x,y):
+        """
+        Coordinates of Obstancle
+        Pre: Must be integers.
+        """
+        self.x=x
+        self.y=y
+
+class reward():
+    """
+    Instance of this class represents a reward on the game grid. Represented by the value of energy it holds.
+
+    INSTANCE ATTRIBUTES:
+    x: x coordinate of the obstancle on the grid. [Integer]
+    y: y coordinate of the obstancle on the grid. [Integer]
+    value: the value of energy held by the particular reward. This is randomly decided. [Integer in range 0-9]
+    """
+    def __init__(self,x,y,value):
+        """
+        Coordinates of reward and value associated with it.
+        Pre: Must be integers.
+        """
+        self.x=x
+        self.y=y
+        self.value=value
+
+class player():
+    """
+    Instance of this class is the player that is moved on the grid to collect rewards and avoid obstancles.
+
+    INSTANCE ATTRIBUTES:
+    x: x coordinate of Player. [Integer]
+    y: y  coordinate of Player. [Integer]
+    Energy: The energy left with player. Each move costs 1 unit of energy. Game is initialized with 2*n units, where n is taken as input from user. [Integer]
+
+    Game ends when energy is zero.
+    """
+    def __init__(self,x,y,energy):
+        """
+        Coordinates and energy level of player.
+        Pre: Must be integers.
+        """
+        self.x=x
+        self.y=y
+        self.energy=energy
+
+    def makemove(self,s):
+        """
+        Changes coordinates of player as per command entered by user.
+        """
+        global n
+        if s=="R":
+            if self.x==n-1:
+                self.x=0
+            else:
+                self.x=self.x+1
+        elif s=="L":
+            if self.x==0:
+                self.x=n-1
+            else:
+                self.x=self.x-1
+        elif s=="D":
+            if self.y==n-1:
+                self.y=0
+            else:
+                self.y=self.y+1
+        else:
+            if self.y==0:
+                self.y=n-1
+            else:
+                self.y=self.y-1
+
+#Helper functions
+
+def update(grid,mat):
+    """
+    Helper function to update the grid after the clockwise or anticlockwise rotation function is called.
+    """
+    grid.myObstancles=[]
+    grid.myRewards=[]
+    row=0
+    while row<n:
+        col=0
+        while col<n:
+            if mat[row][col]=="#":
+                grid.myObstancles.append(obstancle(col,row))
+            elif mat[row][col]!="." and mat[row][col]!="O" and mat[row][col]!="G":
+                grid.myRewards.append(reward(col,row,mat[row][col]))
+            col=col+1
+        row=row+1
