@@ -24,7 +24,7 @@ Atrributes: x: x coordinate of the obstancle on the grid. [Integer]
 3.
 Name: reward
 About: Instance of this class represents a reward on the game grid. Represented by the value of energy it holds.
-Atrributes:x: x coordinate of the obstancle on the grid. [Integer]
+Atrributes: x: x coordinate of the obstancle on the grid. [Integer]
               y: y coordinate of the obstancle on the grid. [Integer]
               value: the value of energy held by the particular reward. This is randomly decided. [Integer in range 0-9]
 
