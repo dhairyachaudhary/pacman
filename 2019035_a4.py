@@ -1,11 +1,3 @@
-#IP Assignment 4
-
-"""
-Name: Dhairya Chaudhary
-Roll No.: 2019035
-Section:A
-"""
-
 from os import system
 from time import sleep
 import random
